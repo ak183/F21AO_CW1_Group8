@@ -1,0 +1,23 @@
+{
+  "name": "group8_f21ao",
+  "version": "1.0.0",
+  "description": "Group8 CW1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chetancac04/applied-devops-group8.git"
+  },
+  "author": "Asad Kamal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chetancac04/applied-devops-group8/issues"
+  },
+  "homepage": "https://github.com/chetancac04/applied-devops-group8#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.17"
+  }
+}
