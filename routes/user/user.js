@@ -83,7 +83,7 @@ router.post('/login',async(req,res)=>{
 
 /* ------CHANGE USER DATA------
 ---------------------------- */
-router.post('/updateuser',checkadmin,async(req,res)=>{
+router.post('/updateuser',async(req,res)=>{
     //sending user_id from frontend is must
 
     const {error}=validation.changeuservalidation(req.body)
