@@ -32,9 +32,9 @@ const Record= new mongoose.Schema({
                     complaint_id:{type:String},
                     documents:[{type:String}],
                     test_suggested:[{type:String}],
-                    test_result:[{
-                                    test:{type:String},
-                                    comment:{type:String}   
+                    test_result:[{       
+                                    test: { type: String },
+                                    comment: {type:String}   
                                 }]
                 }
             ]

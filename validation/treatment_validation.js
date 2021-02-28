@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 
 const create = (data)=>{
     const schema = Joi.object({
@@ -34,10 +34,7 @@ const addcomplaint = (data)=>{
 const createlabtest = (data)=>{
     const schema = Joi.object({
         patient_id: Joi.string().required(),
-        complaint_id: Joi.string().required(),
-        complaints:Joi.array(),
-        interpretation:Joi.array(),
-        medication:Joi.array(),
+        complaint_id: Joi.string().required()
     });
    
     return schema.validate(data)
@@ -57,6 +54,8 @@ const addlabtest = (data)=>{
         patient_id: Joi.string().required(),
         labtest_id: Joi.string().required(),
         test_suggested: Joi.array(),
+        test_result: Joi.array(),
+        documents: Joi.array()
     });
    
     return schema.validate(data)
