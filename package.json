@@ -4,7 +4,7 @@
   "description": "Group8 CW1",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Asad Kamal",
   "license": "ISC",
@@ -16,7 +16,7 @@
     "joi": "^17.4.0",
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.15",
+    "mongoose": "^5.11.17",
     "path": "^0.12.7",
     "shortid": "^2.2.16"
   }

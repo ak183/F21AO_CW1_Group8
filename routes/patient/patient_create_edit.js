@@ -37,7 +37,7 @@ router.post('/create',checkreception,async(req,res)=>{
 
 /* --------GET PATIENT DATA------
 ----------------------------------*/
-router.get('/getdata',checkreception,async(req,res)=>{
+router.post('/getdata',checkreception,async(req,res)=>{
 
     // const {error}=validation.getpatientvalidation(req.body)
     // if(error) return res.send({"error":error.details[0].message})
@@ -88,7 +88,7 @@ router.post('/changedata',checkreception,async(req,res)=>{
     }catch(err){/* redirect to error page */ return res.send({"error":"Error updating to database"})}
 })
 
-router.get('/getbyid',checkreception,async(req,res)=>{
+router.post('/getbyid',checkreception,async(req,res)=>{
     try{
     const data= await patient.findById({"_id":req.body.patient_id})
     if(data){return res.send({"success":data})}else({"error":"No data found"})

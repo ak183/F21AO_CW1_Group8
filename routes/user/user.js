@@ -26,26 +26,32 @@ router.post('/register',async(req,res)=>{
         const checkadmin = await user.find({ "user_role": "admin","status":true})
     if(await checkadmin.length>=2){return res.send({"error":"Cannot create more than 2 administrators"})}
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedpassword= await bcrypt.hash(req.body.password,salt)
+        const salt = await bcrypt.genSalt(10);
+        const hashedpassword= await bcrypt.hash(req.body.password,salt)
+        const random_id = 1234;
 
-    const newuser = new user({
-        first_name:req.body.first_name,
-        last_name:req.body.last_name,
-        user_name:req.body.user_name,
-        user_role:req.body.user_role,
-        phoneno:req.body.phoneno,
-        email:req.body.email,
-        address:req.body.address,
-        password:hashedpassword
-    })
 
-    const isuser = await user.findOne({"user_name":req.body.user_name,"status":true})
-    if(isuser){return res.send({"error":"This user is already saved"})}
-    if(!isuser){
-        const savednewuser = await newuser.save();
-        res.send(`User sucessfully added.`);
-    }  
+        const newuser = new user({
+            staff_id:random_id,
+            first_name:req.body.first_name,
+            last_name:req.body.last_name,
+            user_name:req.body.user_name,
+            user_role:req.body.user_role,
+            phoneno:req.body.phoneno,
+            email:req.body.email,
+            address:req.body.address,
+            password:hashedpassword
+        })
+
+        const isuser = await user.findOne({"user_name":req.body.user_name,"status":true})
+        if(isuser){return res.send({"error":"This user is already saved"})}
+        if(!isuser){
+            const savednewuser = await newuser.save();
+            res.send(`User Added with StaffID ${random_id}`);
+        }
+        
+
+        
 })
 
 
@@ -150,7 +156,8 @@ router.post('/updatepassword',checkadmin,async(req,res)=>{
     const salt = await bcrypt.genSalt(10);
     const hashedpassword= await bcrypt.hash(req.body.password,salt)
     try{
-        const newdata= await user.findOneAndUpdate({"user_name":req.body.user_name,"status":true},{"password":hashedpassword
+        const newdata= await user.findOneAndUpdate({"user_name":req.body.user_name,"status":true},{
+            "password":hashedpassword
         },{useFindAndModify:false,new:true})
         if(await newdata){return res.send({"success":"Changed password"})}else{/* redirect to error page */ return res.send({"error":"Error saving to database"})}
     }catch{err=>{ return res.send({"error":"No such user found"})}}
@@ -189,15 +196,15 @@ router.post('/deleteuser',checkadmin,async(req,res)=>{
 //Get Calls for the Staff Memebers. Only user with "admin" privilages can fetch the details. 
 
 
-router.get('/getallstaff',checkadmin,async(req,res)=>{   
+router.post('/getallstaff',checkadmin,async(req,res)=>{   
     try{
     const list=[];
     const datas = await user.find({"status":true},{"user_name":1,"user_role":1,"_id":0})
-    if(datas.length>0){return res.send({"success":datas})}else{return res.send({"error":"No staffs found"})}
+    if(datas.length>0){return res.send({"success":datas})}else{return res.send({"error":"No doctors found"})}
     }catch{err=>{console.log(err)}}
 })
 
-router.get('/getalldoctors',checkadmin,async(req,res)=>{   
+router.post('/getalldoctors',checkadmin,async(req,res)=>{   
     try{
     const list=[];
     const datas = await user.find({"status":true,"user_role":"doctor"},{"user_name":1,"user_role":1,"_id":0})
@@ -205,11 +212,11 @@ router.get('/getalldoctors',checkadmin,async(req,res)=>{
     }catch{err=>{console.log(err)}}
 })
 
-router.get('/getallnurses',checkadmin,async(req,res)=>{   
+router.post('/getallnurses',checkadmin,async(req,res)=>{   
     try{
     const list=[];
     const datas = await user.find({"status":true,"user_role":"nurse"},{"user_name":1,"user_role":1,"_id":0})
-    if(datas.length>0){return res.send({"success":datas})}else{return res.send({"error":"No nurses found"})}
+    if(datas.length>0){return res.send({"success":datas})}else{return res.send({"error":"No doctors found"})}
     }catch{err=>{console.log(err)}}
 })
 
