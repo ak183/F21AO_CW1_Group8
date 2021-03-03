@@ -28,11 +28,10 @@ router.post('/register',async(req,res)=>{
     }
         const salt = await bcrypt.genSalt(10);
         const hashedpassword= await bcrypt.hash(req.body.password,salt)
-        const random_id = 1234;
+        
 
 
         const newuser = new user({
-            staff_id:random_id,
             first_name:req.body.first_name,
             last_name:req.body.last_name,
             user_name:req.body.user_name,
@@ -47,7 +46,7 @@ router.post('/register',async(req,res)=>{
         if(isuser){return res.send({"error":"This user is already saved"})}
         if(!isuser){
             const savednewuser = await newuser.save();
-            res.send(`User Added with StaffID ${random_id}`);
+            res.send(`User Added successfully`);
         }
         
 

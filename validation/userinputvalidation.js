@@ -37,7 +37,6 @@ const userloginvalidation = (data)=>{
 const usergetdatavalidation = (data)=>{
     const schema = Joi.object({
         user_name : Joi.string().lowercase().allow(""),
-        staff_id : Joi.number().allow(""),
     });
    
     return schema.validate(data)
