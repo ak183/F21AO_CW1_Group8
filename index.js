@@ -1,27 +1,18 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotevn = require ('dotenv');
-const path = require('path');
 const app = express();
-const result = dotevn.config();
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
-console.log(result.parsed);
+
+// Import Routes
+const authRoute = require('./routes/auth');
+
+
+
+// connect to DB
+const result = dotenv.config();
+
 const PORT = process.env.PORT || 5000;
-
-app.use(express.json());
-//app.use(morgan('tiny'));
-
-/* Routes to be imported */
-const user = require("./routes/user/user");
-const patient = require("./routes/patient/registeration/patient_create_edit");
-const treatment = require("./routes/patient/treatment/patient_complaint");
-
-
-app.use('/user', user);
-app.use("/patient/registeration", patient);
-app.use("/treatment", treatment);
-
-
 
 if (result.parsed.NODE_ENV === 'development'){
     //app.use(logger);
@@ -29,12 +20,23 @@ if (result.parsed.NODE_ENV === 'development'){
 }
 
 mongoose.connect(
-    "mongodb://localhost:27017/HMS",
+    "mongodb://localhost:27017/hospitalmanagementsystem",
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => console.log("connected to database")
   );
 
 //Starting Server
-app.listen(PORT, () => console.log (`Server is started ${PORT}`));
+app.listen(PORT, () => console.log(`Server is started ${PORT}`));
 
-//import routes
+// mongoose.connect(process.env.DB_CONNECT,{ useNewUrlParser: true }, { useUnifiedTopology: true },
+//     () => console.log('connected to DB')
+// );
+
+// Middleware
+app.use(express.json());
+
+//Route Middleware
+app.use('/api/user', authRoute);
+
+
+app.listen(3000, () => console.log('Server is up and running'));
