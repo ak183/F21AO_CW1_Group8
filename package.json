@@ -1,23 +1,23 @@
 {
-  "name": "group8_f21ao",
+  "name": "project",
   "version": "1.0.0",
-  "description": "Group8 CW1",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
-  "author": "Asad Kamal",
+  "author": "",
   "license": "ISC",
-  "homepage": "",
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "@hapi/joi": "^15.0.3",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "joi": "^17.4.0",
-    "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.11.17",
-    "path": "^0.12.7",
-    "shortid": "^2.2.16"
+    "jwt-decode": "^3.1.2",
+    "mongoose": "^5.11.17"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
