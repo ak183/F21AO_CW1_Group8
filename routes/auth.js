@@ -61,6 +61,116 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Read all
+router.get('/all', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    // admin
+    if(verified_user[0].user_role==="admin"){ 
+        const userData = await User.find({ "status": true });
+        try {
+            res.send(userData);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+
+    // doctor
+    if(verified_user[0].user_role==="doctor"){ 
+        const userData = await User.find({ "user_role": "doctor" });
+        try {
+            res.send(userData);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+
+    // staff
+    if(verified_user[0].user_role==="staff"){ 
+        const userData = await User.find({ "user_role": "staff" });
+        try {
+            res.send(userData);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+
+    // nurse
+    if(verified_user[0].user_role==="nurse"){ 
+        const userData = await User.find({ "user_role": "nurse" });
+        try {
+            res.send(userData);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+});
+
+// Read one
+router.get('/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    // admin
+    if (verified_user[0].user_role === "doctor" || verified_user[0].user_role === "staff" || verified_user[0].user_role === "admin" || verified_user[0].user_role === "nurse") {
+        const { id } = req.params;
+        const user = await User.findOne({ "_id": id });
+        if(!user) return res.status(400).send('User not found.');
+        try {
+            res.send(user);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+});
+
+// Update one
+router.put('/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    
+    // admin
+    if (verified_user[0].user_role==="doctor" || verified_user[0].user_role==="staff" || verified_user[0].user_role==="admin" || verified_user[0].user_role==="nurse") {
+        const { id } = req.params;
+        //validate the request
+        const value = await req.body;
+        const user = await User.findOne({ "_id": id });
+        if(!user) return res.status(400).send('User not found.'); 
+        try {
+            const updated = await User.update({
+                _id: id,
+            }, {$set: value});
+            res.send(value);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+});
+
+
+// Delete one
+router.delete('/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    // admin
+    if (verified_user[0].user_role==="doctor" || verified_user[0].user_role==="staff" || verified_user[0].user_role==="admin" || verified_user[0].user_role==="nurse") {
+        const { id } = req.params;
+        const user = await User.findOne({ "_id": id });
+        if(!user) return res.status(400).send('User not found.');
+        try {
+            const deleted = await User.remove({
+                _id: id
+            });
+            res.send("User deleted sucessfully.");
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+});
+
 //Logout 
 router.post('/logout', async (req, res) => {
     //validate the request
