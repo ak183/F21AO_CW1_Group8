@@ -121,7 +121,120 @@ router.delete('/:id', verify, async (req, res) => {
         }
     }
 });
+router.post('/checkup/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    // doctor, staff, nurse, admin can fill in their personal details
+    if (verified_user[0].user_role === "doctor" || verified_user[0].user_role === "staff" || verified_user[0].user_role === "admin" || verified_user[0].user_role === "nurse") {
+        const { id } = req.params;
+        if (verified_user[0].user_role === "doctor") { 
+            const doctor_id = verified_user[0]._id;
+            const {error} = patientCheckupValidation(req.body);
+            if (error) return res.status(400).send(error.details[0].message);
+            const patientCheckupData = new PatientCheckup({
+                patient_id: id,
+                doctor_id: doctor_id,
+                complaints: req.body.complaints,
+                interpretation: req.body.interpretation
+            });
+            try {
+                const savedDetails = await patientCheckupData.save();
+                console.log(savedDetails);
+                res.send('Patient Checkup saved Sucessfully.');
+            }
+            catch(err) { 
+                res.status(400).send(err);
+            }
+        }
+        // const {error} = patientRecordValidation(req.body);
+        // if (error) return res.status(400).send(error.details[0].message);
+        // create a new user 
+    } else { 
+        res.status(400).send('Access Denied!');
+    }
+});
 
+// Read all
+router.get('/checkup/all', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    // admin
+    if (verified_user[0].user_role === "admin" || verified_user[0].user_role==="doctor" || verified_user[0].user_role==="nurse") {
+        const patientCheckupData = await PatientCheckup.find();
+        try {
+            res.send(patientCheckupData);
+        } catch (err) {
+            res.status(400).send(err);
+        }
+    } else { 
+        res.status(400).send('Access Denied!'); 
+    }
+});
+
+// Read one
+router.get('/checkup/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    const { id } = req.params;
+    // admin
+    if (verified_user[0].user_role === "doctor" || verified_user[0].user_role === "admin" || verified_user[0].user_role === "nurse") {
+        const patientCheckupData = await PatientCheckup.findOne({ "_id": id });
+        if(!patientCheckupData) return res.status(400).send('Patient not found.');
+        try {
+            res.send(patientCheckupData);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+});
+
+// Update one
+router.put('/checkup/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    const { id } = req.params;
+    if (verified_user[0].user_role==="doctor" || verified_user[0].user_role==="admin" || verified_user[0].user_role==="nurse") {
+        //validate the request
+        const value = await req.body;
+        const patientCheckupData = await PatientCheckup.findOne({ "_id": id });
+        if(!patientCheckupData) return res.status(400).send('Patient not found.'); 
+        try {
+            const updated = await PatientCheckup.update({
+                _id: id,
+            }, {$set: value});
+            res.send(value);
+        } catch(err) { 
+            res.status(400).send(err);
+        }
+    }
+    
+});
+
+// Delete one
+router.delete('/checkup/:id', verify, async (req, res) => {
+    const token = req.header('auth-token');
+    const decodedToken = jwt_decode(token);
+    const verified_user = await User.find({ "_id": ObjectId(decodedToken._id) });
+    const { id } = req.params;
+    if (verified_user[0].user_role === "doctor"
+        || verified_user[0].user_role === "admin"
+        || verified_user[0].user_role === "nurse") {
+        const patientCheckupData = await PatientCheckup.findOne({ "_id": id });
+        if (!patientCheckupData) return res.status(400).send('Patient not found.');
+        try {
+            const deleted = await PatientCheckup.remove({
+                _id: id
+            });
+            res.send("Patient deleted sucessfully.");
+        } catch (err) {
+            res.status(400).send(err);
+        }
+    }
+});
 
 
 
