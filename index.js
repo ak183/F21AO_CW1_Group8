@@ -4,9 +4,14 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 
+
 // Import Routes
 const authRoute = require('./routes/auth');
 
+// Import Routes
+const authRoute = require('./routes/auth');
+const userDetailRoute = require('./routes/userDetail');
+const patientRoute = require('./routes/patient');
 
 
 // connect to DB
@@ -37,6 +42,9 @@ app.use(express.json());
 
 //Route Middleware
 app.use('/api/user', authRoute);
+
+app.use('/api/user-detail', userDetailRoute);
+app.use('/api/patient', patientRoute);
 
 
 app.listen(3000, () => console.log('Server is up and running'));
